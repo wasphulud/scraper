@@ -1,23 +1,41 @@
-import smtplib
+# Standard Library
+import csv
+import os
+# Third-Party Libraries
+import pandas as pd
+import requests
+
+def read_csv(path: str):
+    return pd.read_csv(path).dropna()
+
+def read_xls(path: str):
+    return pd.read_excel(path, dtype=str).dropna()
 
 
-def send_email(sender='123parsemail123@gmail.com', receivers=['visapprdv75@gmail.com','aiman.sokhall@gmail.com','danai.fournier@gmail.com','data.driven.wasp@gmail.com','aiman@aifi.com']):
+def get_img_names(path):
+    return os.listdir(path)
 
-    receivers_join = ', '.join(receivers)
-    subject = 'IMPORTANT MESSAGE REGARDING YOUR VISA AIMAAAAAN '
-    body = "Go now check the https://pprdv.interieur.gouv.fr/booking/create/948/1 \n\n- Yourself"
 
-    email_text = f" \n From: {sender} \nTo: {receivers_join} \nSubject: {subject} \n\n {body}"
+def add_row_to_csv(row, file_name):
+    with open(file_name, "a+", newline="") as file:
+        writer = csv.writer(file, delimiter=",")
+        writer.writerow(row)
 
-    print(email_text)
 
-    try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.ehlo()
-        server.login(sender, 'parsemail123')
-        server.sendmail(sender, receivers, email_text)
-        server.close()
+def get_sku(file_name):
+    sku = file_name.split(".")[0]
+    return sku
 
-        print('Email sent!')
-    except Exception as e:
-        print(f'Something went wrong... \n{e}')
+def download_img(uri, path, verify=True):
+
+    with open(path, 'wb') as handle:
+        response = requests.get(uri, stream=True,verify=verify)
+
+        if not response.ok:
+            print(response)
+
+        for block in response.iter_content(1024):
+            if not block:
+                break
+
+            handle.write(block)
