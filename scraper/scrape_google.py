@@ -15,7 +15,7 @@ from selenium import webdriver
 
 logger = logging.getLogger(__name__)
 
-BARCODE_GOOGLE_XPATH_IMAGE = '//img[contains(@class,"rg_i Q4LuWd")]'
+GOOGLE_XPATH_IMAGE = '//img[contains(@class,"rg_i Q4LuWd")]'
 EMPTY_RESEARCH_GOOGLE = '//*[@id="islmp"]/div/div/p[1]'
 
 LOCAL_TIME = time.ctime(time.time())
@@ -85,7 +85,7 @@ class Scraper:
         try:
             elements_imgs = self.browser.find_element(
                 "xpath",
-                BARCODE_GOOGLE_XPATH_IMAGE
+                GOOGLE_XPATH_IMAGE
             )
 
             new_filename = f"{name}.png"
