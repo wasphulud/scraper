@@ -5,14 +5,20 @@ import urllib.request
 from random import random
 from time import sleep
 import time
+from multiprocessing import Process
+from selenium.webdriver.chrome.options import Options
 
 # Third-Party Libraries
 import pandas as pd
+import numpy as np
 import unidecode
 from selenium import webdriver
 
 
 logger = logging.getLogger(__name__)
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")
 
 GOOGLE_XPATH_IMAGE = '//img[contains(@class,"rg_i Q4LuWd")]'
 EMPTY_RESEARCH_GOOGLE = '//*[@id="islmp"]/div/div/p[1]'
@@ -21,14 +27,15 @@ LOCAL_TIME = time.ctime(time.time())
 
 
 class Scraper:
-    def __init__(self, max_candidates: int = 1):
+    def __init__(self, max_candidates: int = 1, chromedriver: str = ""):
         self.browser = None
         self.entered = False
         self.max_candidates = max_candidates
         self.skip = False
+        self.chromedriver = chromedriver
 
     def __enter__(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Chrome(self.chromedriver, options=chrome_options)
         self.entered = True
         return self
 
@@ -50,7 +57,7 @@ class Scraper:
         )
 
     def scrape(self, df: pd.DataFrame, output_path: str):
-        print(df.head())
+        # print(df.head())
         if not self.entered:
             raise Exception("Not entered, browser not initialized")
 
@@ -67,7 +74,7 @@ class Scraper:
                 term=searchterm, output_path=output_path, name=name, line_num=_id
             )
 
-            sleep(random() * 2)
+            # sleep(random())
 
     def google_scrape(self, term, output_path, name, line_num):
         url = f"https://www.google.co.in/search?q={term}&source=lnms&tbm=isch"
@@ -79,7 +86,8 @@ class Scraper:
             )
             element_all_accept.click()
         except Exception as e:
-            print("Occured Exception", e)
+            # print("Occured Exception",e )
+            pass
 
         try:
             elements_imgs = self.browser.find_element("xpath", GOOGLE_XPATH_IMAGE)
@@ -99,6 +107,28 @@ class Scraper:
             with open(os.path.join(output_path, f"report_{LOCAL_TIME}.txt"), "a") as fd:
                 fd.write(f"\n\n Issue with line {line_num+1} with ID {name}")
                 fd.write(f"\n error: {e}")
-            print("#####################", e)
+            # print("#####################", e)
 
         # uri = upload_img(os.path.join(output_path, "downloads"), new_filename)
+
+
+def multiscraper(dataframe, num_process, max_candidates, chromedriver, output):
+    dataframes = np.array_split(dataframe, num_process)
+    processes = []
+    for i, dataframe in enumerate(dataframes):
+        process = Process(
+            target=run_single_scraper,
+            args=(dataframe, max_candidates, chromedriver, output, i),
+        )
+        processes.append(process)
+        process.start()
+    for process in processes:
+        process.join()
+    print(f"All Processes have been terminates", flush=True)
+
+
+def run_single_scraper(dataframe, max_candidates, chromedriver, output, i):
+    print(f"Starting process {i}", flush=True)
+    with Scraper(max_candidates, chromedriver) as scraper:
+        scraper.scrape(dataframe, output)
+    print(f"Finishing process {i}", flush=True)
