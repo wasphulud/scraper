@@ -124,7 +124,7 @@ def multiscraper(dataframe, num_process, max_candidates, chromedriver, output):
         process.start()
     for process in processes:
         process.join()
-    print(f"All Processes have been terminates", flush=True)
+    print(f"All Processes have been terminated", flush=True)
 
 
 def run_single_scraper(dataframe, max_candidates, chromedriver, output, i):
