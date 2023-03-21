@@ -1,12 +1,15 @@
 # Standard Library
 import csv
 import os
+
 # Third-Party Libraries
 import pandas as pd
 import requests
 
+
 def read_csv(path: str):
     return pd.read_csv(path).dropna()
+
 
 def read_xls(path: str):
     return pd.read_excel(path, dtype=str).dropna()
@@ -26,10 +29,10 @@ def get_sku(file_name):
     sku = file_name.split(".")[0]
     return sku
 
-def download_img(uri, path, verify=True):
 
-    with open(path, 'wb') as handle:
-        response = requests.get(uri, stream=True,verify=verify)
+def download_img(uri, path, verify=True):
+    with open(path, "wb") as handle:
+        response = requests.get(uri, stream=True, verify=verify)
 
         if not response.ok:
             print(response)

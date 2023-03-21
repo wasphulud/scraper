@@ -10,12 +10,8 @@ from scrape_google import Scraper
 
 def parse_args(args):
     parser = ArgumentParser()
-    parser.add_argument(
-        "--csv", type=str, default=os.getenv("CSV_INPUT")
-    )
-    parser.add_argument(
-        "--xls", type=str, default=os.getenv("xls_INPUT")
-    )
+    parser.add_argument("--csv", type=str, default=os.getenv("CSV_INPUT"))
+    parser.add_argument("--xls", type=str, default=os.getenv("xls_INPUT"))
     parser.add_argument(
         "--output",
         type=str,
@@ -38,8 +34,7 @@ def main(args=None):
         elif args.xls:
             scraper.scrape(read_xls(args.xls), args.output)
         else:
-            print('no input found')
-
+            print("no input found")
 
 
 if __name__ == "__main__":

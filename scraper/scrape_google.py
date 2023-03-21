@@ -12,7 +12,6 @@ import unidecode
 from selenium import webdriver
 
 
-
 logger = logging.getLogger(__name__)
 
 GOOGLE_XPATH_IMAGE = '//img[contains(@class,"rg_i Q4LuWd")]'
@@ -45,7 +44,7 @@ class Scraper:
             word.replace("/", "-")
             .replace("®", "")
             .replace("�", "")
-            .replace("\"", "")
+            .replace('"', "")
             .replace("@", "")
             .replace("&", "")
         )
@@ -56,17 +55,17 @@ class Scraper:
             raise Exception("Not entered, browser not initialized")
 
         for _id, name, actor, searchterm, *_ in df.itertuples():
-
             if self.skip:
-                if name == 'escape':
+                if name == "escape":
                     self.skip = False
-                    print('Skipping for the last time')
+                    print("Skipping for the last time")
                 else:
-                    print(f'Skipping {name, actor}')
+                    print(f"Skipping {name, actor}")
                 continue
 
             self.google_scrape(
-                term=searchterm, output_path=output_path, name=name, line_num=_id)
+                term=searchterm, output_path=output_path, name=name, line_num=_id
+            )
 
             sleep(random() * 2)
 
@@ -76,33 +75,30 @@ class Scraper:
         try:
             element_all_accept = self.browser.find_element(
                 "xpath",
-                '//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/div[1]/form[2]/div/div/button/span'
-                )
+                '//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/div[1]/form[2]/div/div/button/span',
+            )
             element_all_accept.click()
         except Exception as e:
             print("Occured Exception", e)
 
         try:
-            elements_imgs = self.browser.find_element(
-                "xpath",
-                GOOGLE_XPATH_IMAGE
-            )
+            elements_imgs = self.browser.find_element("xpath", GOOGLE_XPATH_IMAGE)
 
             new_filename = f"{name}.png"
             if name is not None:
                 new_filename = name + ".png"
 
-            #print(elements_imgs)
-            #logger.info("URL:", x.get_attribute("src"))
+            # print(elements_imgs)
+            # logger.info("URL:", x.get_attribute("src"))
             uri = elements_imgs.get_attribute("src")
 
             path = os.path.join(output_path, "downloads", new_filename)
             urllib.request.urlretrieve(uri, path)
             print("google image successfully downloaded locally")
         except Exception as e:
-            with open(os.path.join(output_path, f'report_{LOCAL_TIME}.txt'), 'a') as fd:
-                fd.write(f'\n\n Issue with line {line_num+1} with ID {name}')
-                fd.write(f'\n error: {e}')
+            with open(os.path.join(output_path, f"report_{LOCAL_TIME}.txt"), "a") as fd:
+                fd.write(f"\n\n Issue with line {line_num+1} with ID {name}")
+                fd.write(f"\n error: {e}")
             print("#####################", e)
-            
-        #uri = upload_img(os.path.join(output_path, "downloads"), new_filename)
+
+        # uri = upload_img(os.path.join(output_path, "downloads"), new_filename)
