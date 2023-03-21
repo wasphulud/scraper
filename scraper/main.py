@@ -31,7 +31,7 @@ def parse_args(args):
     parser.add_argument(
         "--max-workers",
         type=int,
-        default=1,
+        default=0,
     )
     return parser.parse_args(args)
 

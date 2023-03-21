@@ -5,7 +5,7 @@ import urllib.request
 from random import random
 from time import sleep
 import time
-from multiprocessing import Process
+from multiprocessing import Process, cpu_count
 from selenium.webdriver.chrome.options import Options
 
 # Third-Party Libraries
@@ -102,7 +102,7 @@ class Scraper:
 
             path = os.path.join(output_path, "downloads", new_filename)
             urllib.request.urlretrieve(uri, path)
-            print("google image successfully downloaded locally")
+            print(f"google image successfully downloaded locally for the query: {term}")
         except Exception as e:
             with open(os.path.join(output_path, f"report_{LOCAL_TIME}.txt"), "a") as fd:
                 fd.write(f"\n\n Issue with line {line_num+1} with ID {name}")
@@ -113,6 +113,12 @@ class Scraper:
 
 
 def multiscraper(dataframe, num_process, max_candidates, chromedriver, output):
+    if num_process < 1:
+        print(f"Number of processes {num_process} is < 1", flush=True)
+        print(f"Setting the number of processes to #CPU//2", flush=True)
+        num_process = cpu_count() // 2
+        print(f"Number of processes set to {num_process}", flush=True)
+
     dataframes = np.array_split(dataframe, num_process)
     processes = []
     for i, dataframe in enumerate(dataframes):
