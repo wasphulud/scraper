@@ -25,7 +25,7 @@ def parse_args(args):
     parser.add_argument(
         "--max_candidates",
         type=int,
-        default=os.getenv("IMAGES_MAX_CANDIDATES_PER_SKU", 1),
+        default=os.getenv("IMAGES_MAX_CANDIDATES", 1),
     )
     return parser.parse_args(args)
 
