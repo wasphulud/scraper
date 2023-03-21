@@ -12,4 +12,6 @@ TODO:
 * How to
 
 For immediate use, one can run the command below
-```python main.py --xls PATH/TO/XLSX --output PATH/TO/FOLDER/WHERE/TO/SAVE/THE/IMAGES --chromedriver PATH/TO/CHROMEDRIVER --max-workers NUM_CPUS ```
+```python
+python main.py --xls PATH/TO/XLSX --output PATH/TO/FOLDER/WHERE/TO/SAVE/THE/IMAGES --chromedriver PATH/TO/CHROMEDRIVER --max-workers NUM_CPUS
+```
