@@ -4,6 +4,8 @@ import sys
 from argparse import ArgumentParser
 from time import perf_counter
 
+from chromedriver_py import binary_path
+
 # Project Imports
 from helpers import read_csv, read_xls
 from scrape_google import Scraper, multiscraper
@@ -60,7 +62,11 @@ def main(args=None):
 
     start_time = perf_counter()
     multiscraper(
-        dataframe, args.max_workers, args.max_candidates, args.chromedriver, args.output
+        dataframe,
+        args.max_workers,
+        args.max_candidates,
+        binary_path,
+        args.output,  # args.chromedriver, args.output
     )
     print(f"Total time: {perf_counter() - start_time} seconds")
 
