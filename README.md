@@ -1,7 +1,7 @@
 # Text Search Image Scraper
 
 ## Introduction
-This repository contains a Python script designed to scrape images from Google based on any predefined text search. Initially created to help a friend gather specific images, this tool can be utilized for a wide range of search queries.
+This repository contains a Python script designed to scrape images from Google based on any predefined text search. Initially created to help a friend gather logos, this tool can be utilized for a wide range of search queries.
 
 # Description
 This repo helps a user download google images by providing a list of google queries in a csv format.
