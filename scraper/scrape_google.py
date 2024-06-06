@@ -19,12 +19,12 @@ from selenium.webdriver.common.by import By
 logger = logging.getLogger(__name__)
 
 chrome_options = Options()
-# chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
 
 GOOGLE_XPATH_IMAGE = "/html/body/div[5]/div/div[15]/div/div[2]/div[2]/div/div/div/div/div[1]/div/div/div[1]/div[2]/h3/a/div/div/div/g-img/img"  #'//img[contains(@class,"")]'
 EMPTY_RESEARCH_GOOGLE = '//*[@id="islmp"]/div/div/p[1]'
 
-LOCAL_TIME = time.ctime(time.time())
+LOCAL_TIME = str(time.ctime(time.time())).replace(" ", "")
 
 
 class Scraper:
@@ -90,8 +90,6 @@ class Scraper:
             # print("Occured Exception",e )
             pass
 
-        # time.sleep(1000)
-
         try:
             elements_imgs = self.browser.find_element(By.XPATH, GOOGLE_XPATH_IMAGE)
 
@@ -106,7 +104,6 @@ class Scraper:
             path = os.path.join(output_path, "downloads", new_filename)
             urllib.request.urlretrieve(uri, path)
             print(f"google image successfully downloaded locally for the query: {term}")
-            # time.sleep(200)
         except Exception as e:
             with open(os.path.join(output_path, f"report_{LOCAL_TIME}.txt"), "a") as fd:
                 fd.write(f"\n\n Issue with line {line_num+1} with ID {name}")
